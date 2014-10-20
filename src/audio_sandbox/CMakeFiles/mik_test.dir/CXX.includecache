@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jsinapov/my_sandbox/audio_sandbox/src/mik_test.cpp
+cstdio
+-
+string.h
+-
+iostream
+-
+signal.h
+-
+portaudio.h
+-
+boost/thread/thread.hpp
+-
+

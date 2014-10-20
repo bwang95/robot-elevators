@@ -1,0 +1,3 @@
+/home/jsinapov/my_sandbox/audio_sandbox/CMakeFiles/alsa_capture.dir
+/home/jsinapov/my_sandbox/audio_sandbox/CMakeFiles/alsa_sound_detector_demo.dir
+/home/jsinapov/my_sandbox/audio_sandbox/CMakeFiles/mik_test.dir
