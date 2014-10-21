@@ -10,16 +10,10 @@ using namespace std;
 using namespace ros;
 
 class SoundInterface {
-	vector<double> *lastData;
 public:
-    SoundInterface() {
-    	lastData = NULL;
-    }
-    ~SoundInterface() {
-    	if(lastData != NULL)
-    		delete lastData;
-    }
+    SoundInterface() {}
     void fft_callback(const elevators::fft_col::ConstPtr &msg);
+    void process_audio(vector<double> data);
 };
 
 #endif //SOUND_INTERFACE_H
