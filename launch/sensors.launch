@@ -1,0 +1,9 @@
+<launch>
+	<include file="$(find elevators)/launch/fft_launch.launch"/>
+	<include file="$(find segbot_sensors)/launch/usbcam.launch"/>
+	<node 
+		name="elevator_sensors"
+		pkg="elevators"
+		type="elevator_node"
+		/>
+</launch>

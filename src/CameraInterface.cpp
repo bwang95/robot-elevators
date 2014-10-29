@@ -8,7 +8,7 @@ void CameraInterface::image_callback(
     delete ptr;
 }
 
-void CameraInterface::process(){
+void CameraInterface::process() {
 	ROS_INFO("Processing image with dimensions %d x %d\n", 
 		lastImage->width, lastImage->height);
 }

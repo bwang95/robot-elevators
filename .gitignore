@@ -32,3 +32,6 @@ Project
 CMakeFiles/*
 **.cmake
 CMakeCache.txt
+
+#Audacity files
+audacity/

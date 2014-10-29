@@ -6,5 +6,5 @@ void SoundInterface::fft_callback(const elevators::fft_col::ConstPtr &msg){
 }
 
 void SoundInterface::process_audio(std::vector<double> data){
-	ROS_INFO("Processing audio data with length %d", data.size());
+	ROS_INFO("Processing audio data with length %lu", data.size());
 }
