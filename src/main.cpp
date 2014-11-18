@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 	CameraInterface cinter;
 
 	Subscriber listener = node.subscribe("/fft_topic", 100, &SoundInterface::fft_callback, &sinter);
-	Subscriber image = node.subscribe("camera/image_raw", 100, &CameraInterface::image_callback, &cinter);
+	Subscriber image = node.subscribe(argc > 1 ? argv[1] : "camera/image_raw", 100, &CameraInterface::image_callback, &cinter);
 
 	spin();
 

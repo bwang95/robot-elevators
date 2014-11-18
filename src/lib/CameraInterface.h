@@ -8,8 +8,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv/cvaux.h>
-#include <opencv/highgui.h>
-#include <opencv/cxcore.h>
+#include <cv_bridge/cv_bridge.h>
 #include "CameraImage.h"
 
 using namespace cv;

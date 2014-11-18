@@ -38,35 +38,35 @@ int SoundInterface::peak(int index, vector<double> *dataptr)
 
 void SoundInterface::load_ref_data()
 {
-  vector<float> *v = new vector<float> ();
+  // vector<float> *v = new vector<float> ();
 
-  DIR *dir;
-  dirent *ent;
-  string line;
-  if((dir = opendir("")) != NULL){
-    while((ent = readdir(dir)) != NULL){
-      ifstream file;
-      file.open(ent->d_name);
+  // DIR *dir;
+  // dirent *ent;
+  // string line;
+  // if((dir = opendir("")) != NULL){
+  //   while((ent = readdir(dir)) != NULL){
+  //     ifstream file;
+  //     file.open(ent->d_name);
 
-      vector<double> processed;
+  //     vector<double> processed;
 
-      getline(file, line);
+  //     getline(file, line);
 
-      if(line != "#elevators/data")
-        continue;
+  //     if(line != "#elevators/data")
+  //       continue;
 
-      while(getline (file, line)){
+  //     while(getline (file, line)){
         
-      }
+  //     }
 
-      file.close();
-    }
-  } else {
-    ROS_ERROR("Could not open directory!");
-    return;
-  }
+  //     file.close();
+  //   }
+  // } else {
+  //   ROS_ERROR("Could not open directory!");
+  //   return;
+  // }
 
-  sound_db.push_back(v);
+  // sound_db.push_back(v);
 }
 
 double max(double a, double b){
