@@ -10,19 +10,17 @@
 
 using namespace cv;
 
-struct CameraImage
-{
-  int width;
-  int height;
-  Mat image;
+struct CameraImage {
+    int width;
+    int height;
+    Mat image;
 
-  CameraImage(const sensor_msgs::Image::ConstPtr &msg):
-    image(cv_bridge::toCvCopy(msg, 
-    	sensor_msgs::image_encodings::TYPE_8UC3)->image),
-    width(msg->width),
-    height(msg->height)
-  {
-  }
+    CameraImage(const sensor_msgs::Image::ConstPtr &msg):
+        image(cv_bridge::toCvCopy(msg,
+              sensor_msgs::image_encodings::TYPE_8UC3)->image),
+        width(msg->width),
+        height(msg->height) {
+    }
 };
 
 #endif //CAMERA_IMAGE_H
