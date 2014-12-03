@@ -4,6 +4,8 @@
 #define SCALE 2
 
 double area(vector<Point> *);
+double greatestRatio(vector<Point> *);
+double distance(double, double, double, double);
 
 void CameraInterface::image_callback(
   const sensor_msgs::Image::ConstPtr &msg)
@@ -35,15 +37,17 @@ void CameraInterface::process()
   approximation.resize(contours.size());
   for (int k = 0; k < contours.size(); k++)
   {
-    approxPolyDP(Mat(contours[k]), approximation[k], 1, true);
+    approxPolyDP(Mat(contours[k]), approximation[k], 10, true);
   }
   for ( int i = 0; i < approximation.size(); i++ )
   {
     if (approximation[i].size() == 3)
     {
       double areaNum = area(&approximation[i]);
-      if (areaNum > 25)
+      double GR = greatestRatio(&approximation[i]);
+      if (areaNum > 1000 && GR < 2)
       {
+        
         Scalar color = Scalar(255, 255, 255);
         cout << approximation[i] << endl;
         cout << "Found triangle of area: " << areaNum << endl;
@@ -83,4 +87,32 @@ double area(vector<Point> *vertices)
   double C[2] = {(*vertices)[2].x, (*vertices)[2].y};
 
   return abs(A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])) / 2.0;
+}
+
+double greatestRatio(vector<Point> *vertices){
+  double A[2] = {(*vertices)[0].x, (*vertices)[0].y};
+  double B[2] = {(*vertices)[1].x, (*vertices)[1].y};
+  double C[2] = {(*vertices)[2].x, (*vertices)[2].y};
+
+  double D[3] = {
+    distance(A[0], A[1], B[0], B[1]),
+    distance(A[0], A[1], C[0], C[1]),
+    distance(B[0], B[1], C[0], C[1])
+  };
+
+  double ratios[3] = {
+    D[0] / D[1],
+    D[0] / D[2],
+    D[1] / D[2]
+  };
+
+  ratios[0] = max(ratios[0], 1 / ratios[0]);
+  ratios[1] = max(ratios[1], 1 / ratios[1]);  
+  ratios[2] = max(ratios[2], 1 / ratios[2]);
+
+  return max(ratios[0], max(ratios[1], ratios[2]));
+}
+
+double distance(double x1, double y1, double x2, double y2){
+  return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
