@@ -42,7 +42,19 @@ void CameraInterface::process() {
 				Scalar color = Scalar(255, 255, 255);
 				cout << approximation[i] << endl;
 				cout << "Found triangle of area: " << areaNum << endl;
+
+				enum Direction dir = getDirection(&approximation[i]);
+				cout << "Triangle pointing: ";
+				switch(dir){
+					case DIR_UP : cout << "Up" << endl;
+						break;
+					case DIR_DOWN : cout << "Down" << endl;
+						break;
+					case DIR_UNKNOWN : cout << "Not enough info!" << endl;
+				}
+
 				drawContours( thresholded, approximation, i, color, 2, 8, hierarchy, 0, Point() );
+
 			}
 		}
 	}
@@ -84,7 +96,7 @@ enum Direction CameraInterface::getDirection(vector<Point> *vertices) {
 	closeToMin += isCloserTo(A[1], minimum, maximum) == 1 ? 1 : 0;
 	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
 
-	if(closeToMin == 1)
+	if (closeToMin == 1)
 		return DIR_DOWN;
 
 	return DIR_UP;
@@ -100,7 +112,7 @@ double area(vector<Point> *vertices) {
 	return abs(A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])) / 2.0;
 }
 
-int isCloserTo(double subject, double one, double two){
+int isCloserTo(double subject, double one, double two) {
 	double diffOne = abs(one - subject);
 	double diffTwo = abs(two - subject);
 	return diffTwo < diffOne ? 2 : 1;
