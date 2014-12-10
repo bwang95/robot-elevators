@@ -21,6 +21,12 @@ enum hsv_type {
     HSV_255
 };
 
+enum Direction {
+    DIR_UNKNOWN = -1,
+    DIR_UP = 0,
+    DIR_DOWN = 1
+};
+
 using namespace cv;
 using namespace std;
 using namespace ros;
@@ -41,6 +47,7 @@ public:
     void image_callback(const sensor_msgs::Image::ConstPtr &msg);
     void process();
     void generateMinMax(Scalar ideal, Scalar range, enum hsv_type type);
+    enum Direction getDirection(vector<Point> *vertices);
     Scalar getMin() {
         return hsv_min;
     }
