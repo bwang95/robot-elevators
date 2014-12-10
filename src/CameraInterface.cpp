@@ -97,9 +97,9 @@ enum Direction CameraInterface::getDirection(vector<Point> *vertices) {
 	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
 
 	if (closeToMin == 1)
-		return DIR_DOWN;
+		return DIR_UP;
 
-	return DIR_UP;
+	return DIR_DOWN;
 }
 
 double area(vector<Point> *vertices) {
