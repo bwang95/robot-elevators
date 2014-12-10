@@ -33,7 +33,7 @@ void CameraInterface::process() {
 
 	approximation.resize(contours.size());
 	for (int k = 0; k < contours.size(); k++) {
-		approxPolyDP(Mat(contours[k]), approximation[k], 1, true);
+		approxPolyDP(Mat(contours[k]), approximation[k], 10, true);
 	}
 	for ( int i = 0; i < approximation.size(); i++ ) {
 		if (approximation[i].size() == 3) {
