@@ -18,9 +18,9 @@ void SoundInterface::process_audio(vector<double> data)
   for (; k < data.size(); k++)
   {
     peaks[k] = peak(k, &data);
-    cout << peaks[k] << " ";
+//    cout << peaks[k] << " ";
   }
-  cout << endl;
+//  cout << endl;
 }
 
 int SoundInterface::peak(int index, vector<double> *dataptr)
