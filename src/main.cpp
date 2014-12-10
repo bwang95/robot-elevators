@@ -69,6 +69,7 @@ int main(int argc, char **argv)
 
   while(ok()){
     spinOnce();
+    camera.wait(100);
     camera.alternate();
   }
 

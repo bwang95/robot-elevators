@@ -33,12 +33,12 @@ void CameraInterface::process() {
 
 	approximation.resize(contours.size());
 	for (int k = 0; k < contours.size(); k++) {
-		approxPolyDP(Mat(contours[k]), approximation[k], 6, true);
+		approxPolyDP(Mat(contours[k]), approximation[k], 8, true);
 	}
 	for ( int i = 0; i < approximation.size(); i++ ) {
 		if (approximation[i].size() == 3) {
 			double areaNum = area(&approximation[i]);
-			if (areaNum > 750) {
+			if (areaNum > 100) {
 				Scalar color = Scalar(255, 255, 255);
 				cout << approximation[i] << endl;
 				cout << "Found triangle of area: " << areaNum << endl;
