@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <std_msgs/Float32.h>
 
-#define SLEEP_TIME 1000
+#define SLEEP_TIME 1500
 
 using namespace std;
 using namespace ros;

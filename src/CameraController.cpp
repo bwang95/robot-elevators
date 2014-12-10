@@ -11,7 +11,7 @@ void CameraController::moveTo(float f){
 }
 
 void CameraController::wait(int ms){
-	usleep(ms);
+	usleep(1000 * ms);
 }
 
 void CameraController::alternate(){

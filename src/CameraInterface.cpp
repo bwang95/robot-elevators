@@ -38,7 +38,7 @@ void CameraInterface::process() {
 	for ( int i = 0; i < approximation.size(); i++ ) {
 		if (approximation[i].size() == 3) {
 			double areaNum = area(&approximation[i]);
-			if (areaNum > 25) {
+			if (areaNum > 750) {
 				Scalar color = Scalar(255, 255, 255);
 				cout << approximation[i] << endl;
 				cout << "Found triangle of area: " << areaNum << endl;
