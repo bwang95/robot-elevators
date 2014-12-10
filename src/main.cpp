@@ -56,12 +56,12 @@ int main(int argc, char **argv)
   Subscriber listener = node.subscribe("/fft_topic", 100, &SoundInterface::fft_callback, &sinter);
   Subscriber image = node.subscribe(conf.topic, 100, &CameraInterface::image_callback, &cinter);
 
-  Publisher cpublisherh = node.advertise<std_msgs::Float32>("camera/servo0", 1000);
-  Publisher cpublisherv = node.advertise<std_msgs::Float32>("camera/servo1", 1000);
+  Publisher cpublisherh = node.advertise<std_msgs::Float32>("/servo0_cmd", 1000);
+  //Publisher cpublisherv = node.advertise<std_msgs::Float32>("camera/servo1", 1000);
 
-  std_msgs::Float32 msg;
-  msg.data = 1;
-  cpublisherv.publish(msg);
+  //std_msgs::Float32 msg;
+  //msg.data = 1;
+  //cpublisherv.publish(msg);
   //TODO Accelerometer
 
   CameraController camera(&cpublisherh);
