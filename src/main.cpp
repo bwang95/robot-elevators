@@ -44,8 +44,9 @@ int main(int argc, char **argv) {
 	Scalar range = Scalar(conf.range[0], conf.range[1], conf.range[2]);
 
 	Publisher cpublisherh = node.advertise<std_msgs::Float32>("/servo0_cmd", 1000);
-	CameraController camera(&cpublisherh);
-	camera.wait(1000);
+
+  CameraController camera(&cpublisherh);
+  Subscriber csubscriberh = node.subscribe("/servo0_status", 100, &CameraController::status_callback, &camera);
 
 	SoundInterface sinter;
 	CameraInterface cinter(ideal, range, &camera, HSV_STANDARD);
@@ -56,13 +57,13 @@ int main(int argc, char **argv) {
 	Subscriber listener = node.subscribe("/fft_topic", 100, &SoundInterface::fft_callback, &sinter);
 	Subscriber image = node.subscribe(conf.topic, 100, &CameraInterface::image_callback, &cinter);
 
+  spin();
 
-
-	while (ok()) {
-		spinOnce();
-		camera.wait(100);
-		camera.alternate();
-	}
+	//while (ok()) {
+	//	spinOnce();
+	//	camera.wait(100);
+	//	camera.alternate();
+	//}
 
 	return 0;
 }

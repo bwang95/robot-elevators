@@ -7,7 +7,7 @@ void CameraController::moveTo(float f){
 
 	publisher->publish(msg);
 
-	wait(SLEEP_TIME);
+//	wait(SLEEP_TIME);
 }
 
 void CameraController::wait(int ms){
@@ -19,4 +19,14 @@ void CameraController::alternate(){
 		moveTo(-1);
 	else
 		moveTo(1);
+}
+
+void CameraController::status_callback(std_msgs::Float32::ConstPtr &msg){
+  float pos = msg->data;
+ if(pos >= 0.95 || pos <= -0.95) 
+   counter++;
+ if(counter >= 100){
+   counter = 0;
+   alternate();
+ }
 }
