@@ -5,6 +5,8 @@
 
 double area(vector<Point> *);
 int isCloserTo(double, double, double);
+bool isReasonablyIsosceles(vector<Point> *);
+double distance(double, double, double, double);
 
 void CameraInterface::image_callback(
   const sensor_msgs::Image::ConstPtr &msg) {
@@ -36,34 +38,14 @@ void CameraInterface::process() {
 		approxPolyDP(Mat(contours[k]), approximation[k], 8, true);
 	}
 	for ( int i = 0; i < approximation.size(); i++ ) {
-		if (approximation[i].size() == 3) {
-			double areaNum = area(&approximation[i]);
-			if (areaNum > 100) {
-				Scalar color = Scalar(255, 255, 255);
-				cout << approximation[i] << endl;
-				cout << "Found triangle of area: " << areaNum << endl;
-
-				enum Direction dir = getDirection(&approximation[i]);
-				cout << "Triangle pointing: ";
-				switch(dir){
-					case DIR_UP : cout << "Up" << endl;
-						break;
-					case DIR_DOWN : cout << "Down" << endl;
-						break;
-					case DIR_UNKNOWN : cout << "Not enough info!" << endl;
-				}
-
-				drawContours( thresholded, approximation, i, color, 2, 8, hierarchy, 0, Point() );
-
-			}
+		if (approximation[i].size() == 3 && verifyTriangle(&approximation[i])) {
+			Scalar color = Scalar(255, 255, 255);
+			drawContours( thresholded, approximation, i, color, 2, 8, hierarchy, 0, Point() );
 		}
 	}
 	namedWindow("contours", 1);
 	imshow("contours", thresholded);
-	waitKey(3);
-
-	//Detect triangle.
-
+	waitKey(1);
 }
 
 void CameraInterface::generateMinMax(Scalar ideal, Scalar range, enum hsv_type type) {
@@ -95,6 +77,7 @@ enum Direction CameraInterface::getDirection(vector<Point> *vertices) {
 	closeToMin += isCloserTo(A[0], minimum, maximum) == 1 ? 1 : 0;
 	closeToMin += isCloserTo(A[1], minimum, maximum) == 1 ? 1 : 0;
 	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
+	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
 
 	if (closeToMin == 1)
 		return DIR_UP;
@@ -116,4 +99,55 @@ int isCloserTo(double subject, double one, double two) {
 	double diffOne = abs(one - subject);
 	double diffTwo = abs(two - subject);
 	return diffTwo < diffOne ? 2 : 1;
+}
+
+bool isReasonablyIsosceles(vector<Point> *vertices) {
+	double A[2] = {(*vertices)[0].x, (*vertices)[0].y};
+	double B[2] = {(*vertices)[1].x, (*vertices)[1].y};
+	double C[2] = {(*vertices)[2].x, (*vertices)[2].y};
+
+	double sides[3] = {
+		distance(A[0], A[1], B[0], B[1]),
+		distance(B[0], B[1], A[0], A[1]),
+		distance(B[0], B[1], C[0], C[1])
+	};
+
+	sides[1] /= sides[0];
+	sides[2] /= sides[0];
+	sides[0] = 1;
+
+	return (abs(sides[1] - sides[2]) <= 0.1 || abs(sides[1] - sides[0]) <= 0.1 || abs(sides[2] - sides[0]) <= 0.1);
+}
+
+double distance(double x1, double y1, double x2, double y2) {
+	return sqrt(pow(y2 - y1, 2) + pow(x2 - x1, 2));
+}
+
+bool CameraInterface::verifyTriangle(vector<Point> *vertices) {
+	double areaNum = area(vertices);
+	if (areaNum < 500 && areaNum > 100 && isReasonablyIsosceles(vertices)) {
+		if (verbose) {
+			cout << *vertices << endl;
+			cout << "Found triangle of area: " << areaNum << endl;
+		}
+
+		if (controller->getCurrentPosition() < 0)
+			cout << "Elevator on the left" << endl;
+		else
+			cout << "Elevator on the right" << endl;
+
+		enum Direction dir = getDirection(vertices);
+		cout << "Triangle pointing: ";
+		switch (dir) {
+		case DIR_UP : cout << "Up" << endl;
+			break;
+		case DIR_DOWN : cout << "Down" << endl;
+			break;
+		case DIR_UNKNOWN : cout << "Not enough info!" << endl;
+		}
+
+		return true;
+
+	}
+	return false;
 }

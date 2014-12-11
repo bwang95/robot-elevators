@@ -10,6 +10,7 @@
 #include <opencv/cvaux.h>
 #include <cv_bridge/cv_bridge.h>
 #include "CameraImage.h"
+#include "CameraController.h"
 #include <ctime>
 
 #define H 0
@@ -34,11 +35,16 @@ using namespace ros;
 class CameraInterface {
     CameraImage *lastImage;
     Scalar hsv_min, hsv_max;
+    CameraController *controller;
+    bool verbose;
 public:
-    CameraInterface(Scalar ideal, Scalar range, enum hsv_type type) {
+    CameraInterface(Scalar ideal, Scalar range, CameraController *cont, enum hsv_type type) {
         lastImage = NULL;
         generateMinMax(ideal, range, type);
         srand(time(NULL));
+        controller = cont;
+
+        verbose = true;
     }
     ~CameraInterface() {
         if (lastImage != NULL)
@@ -48,6 +54,7 @@ public:
     void process();
     void generateMinMax(Scalar ideal, Scalar range, enum hsv_type type);
     enum Direction getDirection(vector<Point> *vertices);
+    bool verifyTriangle(vector<Point> *vertices);
     Scalar getMin() {
         return hsv_min;
     }
