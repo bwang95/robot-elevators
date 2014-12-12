@@ -37,9 +37,11 @@ class CameraInterface {
     Scalar hsv_min, hsv_max;
     CameraController *controller;
     bool verbose;
+	bool flip;
+	int sigma;
 	int[2] tri;
 public:
-    CameraInterface(Scalar ideal, Scalar range, CameraController *cont, int[2] area, enum hsv_type type) {
+    CameraInterface(Scalar ideal, Scalar range, CameraController *cont, int[2] area, bool f, int strict, enum hsv_type type) {
         lastImage = NULL;
         generateMinMax(ideal, range, type);
         srand(time(NULL));
@@ -47,6 +49,9 @@ public:
 
 		tri[0] = area[0];
 		tri[1] = area[1];
+
+		sigma = strict;
+		flip = f;
 
         verbose = true;
     }

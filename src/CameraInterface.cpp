@@ -35,7 +35,7 @@ void CameraInterface::process() {
 
 	approximation.resize(contours.size());
 	for (int k = 0; k < contours.size(); k++) {
-		approxPolyDP(Mat(contours[k]), approximation[k], 8, true);
+		approxPolyDP(Mat(contours[k]), approximation[k], sigma, true);
 	}
 	for ( int i = 0; i < approximation.size(); i++ ) {
 		if (approximation[i].size() == 3 && verifyTriangle(&approximation[i])) {
@@ -80,9 +80,9 @@ enum Direction CameraInterface::getDirection(vector<Point> *vertices) {
 	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
 
 	if (closeToMin == 1)
-		return DIR_UP;
+		return flip ? DIR_DOWN : DIR_UP;
 
-	return DIR_DOWN;
+	return flip ? DIR_UP : DIR_DOWN;
 }
 
 double area(vector<Point> *vertices) {
@@ -149,7 +149,6 @@ bool CameraInterface::verifyTriangle(vector<Point> *vertices) {
 		}
 
 		return true;
-
 	}
 	return false;
 }

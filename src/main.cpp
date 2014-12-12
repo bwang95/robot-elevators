@@ -18,6 +18,8 @@ struct config {
 	int range[3];
 	int area[2];
 	string topic;
+	bool flip;
+	int strictness;
 };
 
 void parse(ifstream *, struct config *);
@@ -50,7 +52,8 @@ int main(int argc, char **argv) {
   Subscriber csubscriberh = node.subscribe("/servo0_status", 100, &CameraController::status_callback, &camera);
 
 	SoundInterface sinter;
-	CameraInterface cinter(ideal, range, &camera, conf.area, HSV_STANDARD);
+	CameraInterface cinter(ideal, range, &camera, conf.area, 
+		conf.flip, conf.strictness, HSV_STANDARD);
 
 	cout << cinter.getMin() << endl;
 	cout << cinter.getMax() << endl;
@@ -99,6 +102,12 @@ void parse(ifstream *file, struct config *configuration) {
 				configuration->area[0] = configuration->area[1];
 				configuration->area[1] = t;
 			}
+		} else if(line == "strictness") {
+			getline(*file, line);
+			configuration->strictness = atoi(line);
+		} else if(line == "flip_dir"){
+			getline(*file, line);
+			configuration->flip = (line == "true");
 		}
 	}
 }
