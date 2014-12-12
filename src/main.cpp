@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
   Subscriber csubscriberh = node.subscribe("/servo0_status", 100, &CameraController::status_callback, &camera);
 
 	SoundInterface sinter;
-	CameraInterface cinter(ideal, range, &camera, conf.area, 
+	CameraInterface cinter(ideal, range, &camera, conf.area[0], conf.area[1], 
 		conf.flip, conf.strictness, HSV_STANDARD);
 
 	cout << cinter.getMin() << endl;
@@ -104,7 +104,8 @@ void parse(ifstream *file, struct config *configuration) {
 			}
 		} else if(line == "strictness") {
 			getline(*file, line);
-			configuration->strictness = atoi(line);
+			configuration->strictness = atoi(line.c_str());
+			cout << configuration->strictness << endl;
 		} else if(line == "flip_dir"){
 			getline(*file, line);
 			configuration->flip = (line == "true");

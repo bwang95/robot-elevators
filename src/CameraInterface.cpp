@@ -7,6 +7,7 @@ double area(vector<Point> *);
 int isCloserTo(double, double, double);
 bool isReasonablyIsosceles(vector<Point> *);
 double distance(double, double, double, double);
+bool inRangeValues(double, double, double);
 
 void CameraInterface::image_callback(
   const sensor_msgs::Image::ConstPtr &msg) {
@@ -18,6 +19,10 @@ void CameraInterface::image_callback(
 }
 
 void CameraInterface::process() {
+
+	if(abs(controller->getCurrentPosition()) < 0.40)
+		return;
+
 	int cols = lastImage->width;
 	int rows = lastImage->height;
 
@@ -38,7 +43,8 @@ void CameraInterface::process() {
 		approxPolyDP(Mat(contours[k]), approximation[k], sigma, true);
 	}
 	for ( int i = 0; i < approximation.size(); i++ ) {
-		if (approximation[i].size() == 3 && verifyTriangle(&approximation[i])) {
+		if (approximation[i].size() == 3){
+			verifyTriangle(&approximation[i]);
 			Scalar color = Scalar(255, 255, 255);
 			drawContours( thresholded, approximation, i, color, 2, 8, hierarchy, 0, Point() );
 		}
@@ -76,7 +82,6 @@ enum Direction CameraInterface::getDirection(vector<Point> *vertices) {
 
 	closeToMin += isCloserTo(A[0], minimum, maximum) == 1 ? 1 : 0;
 	closeToMin += isCloserTo(A[1], minimum, maximum) == 1 ? 1 : 0;
-	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
 	closeToMin += isCloserTo(A[2], minimum, maximum) == 1 ? 1 : 0;
 
 	if (closeToMin == 1)
@@ -125,30 +130,61 @@ double distance(double x1, double y1, double x2, double y2) {
 
 bool CameraInterface::verifyTriangle(vector<Point> *vertices) {
 	double areaNum = area(vertices);
-	if (tri[0] <= areaNum && areaNum <= tri[1] && 
-		isReasonablyIsosceles(vertices)) {
+	if (tri[0] <= areaNum && areaNum <= tri[1] && inRegion(vertices)){// && //isReasonablyIsosceles(vertices)) {
 
 		if (verbose) {
 			cout << *vertices << endl;
 			cout << "Found triangle of area: " << areaNum << endl;
 		}
 
-		if (controller->getCurrentPosition() < 0)
-			cout << "Elevator on the left" << endl;
+		if (controller->getCurrentPosition() > 0)
+			cout << "Elevator on the left has arrived" << endl;
 		else
-			cout << "Elevator on the right" << endl;
+			cout << "Elevator on the right has arrived" << endl;
 
 		enum Direction dir = getDirection(vertices);
-		cout << "Triangle pointing: ";
+		cout << "Direction: ";
 		switch (dir) {
-		case DIR_UP : cout << "Up" << endl;
+		case DIR_UP : cout << "Down" << endl;
 			break;
-		case DIR_DOWN : cout << "Down" << endl;
+		case DIR_DOWN : cout << "Up" << endl;
 			break;
 		case DIR_UNKNOWN : cout << "Not enough info!" << endl;
 		}
-
+		if(found++ >= 1){
+			cout << "Stopping scan" << endl;
+			exit(0);
+		}
 		return true;
 	}
 	return false;
+}
+
+bool CameraInterface::inRegion(vector<Point> *vertices) {
+
+	double X[3] = {
+		(*vertices)[0].x,
+		(*vertices)[1].x,
+		(*vertices)[2].x
+	};
+	double Y[3] = {
+		(*vertices)[0].y,
+		(*vertices)[1].y,
+		(*vertices)[2].y
+	};
+
+	for(int k = 0; k < 3; k++){
+		if((controller->getCurrentPosition() > 0 && !inRangeValues(X[k], 400, 600)) || 
+			(controller->getCurrentPosition() < 0 && !inRangeValues(X[k], 0, 200)) || Y[k] < 300){
+			if(verbose)
+				cout << "Rejecting triangle " << *vertices << endl;
+			return false;
+		}
+	}
+	return true;
+
+}
+
+bool inRangeValues(double a, double s, double e){
+	return (s < a && a < e);
 }
