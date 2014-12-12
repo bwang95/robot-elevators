@@ -16,6 +16,7 @@ static int current_floor = 3;
 struct config {
 	int ideal[3];
 	int range[3];
+	int area[2];
 	string topic;
 };
 
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
   Subscriber csubscriberh = node.subscribe("/servo0_status", 100, &CameraController::status_callback, &camera);
 
 	SoundInterface sinter;
-	CameraInterface cinter(ideal, range, &camera, HSV_STANDARD);
+	CameraInterface cinter(ideal, range, &camera, conf.area, HSV_STANDARD);
 
 	cout << cinter.getMin() << endl;
 	cout << cinter.getMax() << endl;
@@ -88,6 +89,16 @@ void parse(ifstream *file, struct config *configuration) {
 			}
 			getline(*file, line);
 			configuration->range[2] = atoi(line.c_str());
+		} else if (line == "area_threshold"){
+			getline(*file, line, ' ');
+			configuration->area[0] = atoi(line.c_str());
+			getline(*file, line);
+			configuration->area[1] = atoi(line.c_str());
+			if(configuration->area[1] < configuration->area[0]){
+				int t = configuration->area[0];
+				configuration->area[0] = configuration->area[1];
+				configuration->area[1] = t;
+			}
 		}
 	}
 }

@@ -125,7 +125,9 @@ double distance(double x1, double y1, double x2, double y2) {
 
 bool CameraInterface::verifyTriangle(vector<Point> *vertices) {
 	double areaNum = area(vertices);
-	if (areaNum < 500 && areaNum > 100 && isReasonablyIsosceles(vertices)) {
+	if (tri[0] <= areaNum && areaNum <= tri[1] && 
+		isReasonablyIsosceles(vertices)) {
+
 		if (verbose) {
 			cout << *vertices << endl;
 			cout << "Found triangle of area: " << areaNum << endl;
