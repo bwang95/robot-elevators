@@ -17,7 +17,7 @@ struct CameraImage {
 
     CameraImage(const sensor_msgs::Image::ConstPtr &msg):
         image(cv_bridge::toCvCopy(msg,
-              sensor_msgs::image_encodings::TYPE_8UC3)->image),
+                                  sensor_msgs::image_encodings::TYPE_8UC3)->image),
         width(msg->width),
         height(msg->height) {
     }

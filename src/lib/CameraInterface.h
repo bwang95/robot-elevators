@@ -37,37 +37,37 @@ class CameraInterface {
     Scalar hsv_min, hsv_max;
     CameraController *controller;
     bool verbose;
-	bool flip;
-	int sigma;
-	int* tri;
-int found;
+    bool flip;
+    int sigma;
+    int *tri;
+    int found;
 public:
     CameraInterface(Scalar ideal, Scalar range, CameraController *cont, int area1, int area2, bool f, int strict, enum hsv_type type) {
         lastImage = NULL;
         generateMinMax(ideal, range, type);
         srand(time(NULL));
         controller = cont;
-	tri = (int *)malloc(2 * sizeof(int));
-		tri[0] = 0;
-		tri[1] = 1000;
+        tri = (int *)malloc(2 * sizeof(int));
+        tri[0] = 0;
+        tri[1] = 1000;
 
-		sigma = 12;
-		flip = true;
+        sigma = 12;
+        flip = true;
 
         verbose = true;
-found = 0;
+        found = 0;
     }
     ~CameraInterface() {
         if (lastImage != NULL)
             delete lastImage;
-	free(tri);
+        free(tri);
     }
     void image_callback(const sensor_msgs::Image::ConstPtr &msg);
     void process();
     void generateMinMax(Scalar ideal, Scalar range, enum hsv_type type);
     enum Direction getDirection(vector<Point> *vertices);
     bool verifyTriangle(vector<Point> *vertices);
-	bool inRegion(vector<Point> *vertices);
+    bool inRegion(vector<Point> *vertices);
     Scalar getMin() {
         return hsv_min;
     }
