@@ -48,13 +48,14 @@ public:
         srand(time(NULL));
         controller = cont;
         tri = (int *)malloc(2 * sizeof(int));
+
         tri[0] = 0;
         tri[1] = 1000;
 
         sigma = 12;
         flip = true;
 
-        verbose = true;
+        verbose = false;
         found = 0;
     }
     ~CameraInterface() {

@@ -3,7 +3,7 @@
 void CameraController::moveTo(float f) {
     std_msgs::Float32 msg;
     msg.data = f;
-
+    
     publisher->publish(msg);
 }
 
@@ -13,9 +13,9 @@ void CameraController::wait(int ms) {
 
 void CameraController::alternate() {
     if (currentPosition >= 0)
-        moveTo(-.5);
+        moveTo(-0.5);
     else
-        moveTo(.5);
+        moveTo(0.5);
 }
 
 void CameraController::status_callback(const std_msgs::Float32::ConstPtr &msg) {
