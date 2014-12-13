@@ -13,14 +13,14 @@ void CameraController::wait(int ms) {
 
 void CameraController::alternate() {
     if (currentPosition >= 0)
-        moveTo(-0.5);
+        moveTo(range[0]);
     else
-        moveTo(0.5);
+        moveTo(range[1]);
 }
 
 void CameraController::status_callback(const std_msgs::Float32::ConstPtr &msg) {
     currentPosition = msg->data;
-    if (currentPosition >= 0.45 || currentPosition <= -0.45)
+    if (currentPosition <= range[0] + 0.05 || currentPosition >= range[1] - 0.05)
         counter++;
     if (counter >= 60) {
         counter = 0;

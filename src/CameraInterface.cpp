@@ -3,10 +3,15 @@
 
 #define SCALE 2
 
+//Finds the area of the triangle.
 double area(vector<Point> *);
+//Returns which double the first is closest to.
 int isCloserTo(double, double, double);
+//Returns whether the triangle is reasonably isosceles.
 bool isReasonablyIsosceles(vector<Point> *);
+//Distance formula.
 double distance(double, double, double, double);
+//Whether the double is in range of the set defined by the other two.
 bool inRangeValues(double, double, double);
 
 void CameraInterface::image_callback(
@@ -130,7 +135,7 @@ double distance(double x1, double y1, double x2, double y2) {
 
 bool CameraInterface::verifyTriangle(vector<Point> *vertices) {
     double areaNum = area(vertices);
-    if (tri[0] <= areaNum && areaNum <= tri[1] && inRegion(vertices)) { // && //isReasonablyIsosceles(vertices)) {
+    if (tri[0] <= areaNum && areaNum <= tri[1] && inRegion(vertices)) { // && isReasonablyIsosceles(vertices)) {
 
         if (verbose) {
             cout << *vertices << endl;

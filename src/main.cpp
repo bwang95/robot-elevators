@@ -13,15 +13,29 @@ using namespace ros;
 
 static int current_floor = 3;
 
+/**
+ * Configuration struct. Currently, the following have no effect:
+ * 
+ * area
+ * flip
+ * strictness
+ */
 struct config {
+    //Ideal HSV values. All values must be out of 255.
     int ideal[3];
+    //Range of HSV values. All values must be out of 255.
     int range[3];
+    //Min and max area thresholds for triangles found.
     int area[2];
+    //Topic to subscribe to.
     string topic;
+    //Whether or not to flip the directions each elevator is going.
     bool flip;
+    //How strict to be with triangle matching. 0 is the most strict.
     int strictness;
 };
 
+//Parse a config file.
 void parse(ifstream *, struct config *);
 
 int main(int argc, char **argv) {
@@ -46,21 +60,32 @@ int main(int argc, char **argv) {
     Scalar ideal = Scalar(conf.ideal[0], conf.ideal[1], conf.ideal[2]);
     Scalar range = Scalar(conf.range[0], conf.range[1], conf.range[2]);
 
+    //Servo and controller initialization.
     Publisher cpublisherh = node.advertise<std_msgs::Float32>("/servo0_cmd", 1000);
 
     CameraController camera(&cpublisherh);
     Subscriber csubscriberh = node.subscribe("/servo0_status", 100, &CameraController::status_callback, &camera);
 
+    //Set area threshold. Parsing problems can't be solved at the moment.
+    conf.area[0] = 0;
+    conf.area[1] = 1000;
+
+    //Initialize sound interface.
     SoundInterface sinter;
-    CameraInterface cinter(ideal, range, &camera, conf.area[0], conf.area[1],
+
+    //Initialize camera interface.
+    CameraInterface cinter(ideal, range, &camera, conf.area,
                            conf.flip, conf.strictness, HSV_STANDARD);
 
+    //Print out minimum and maximum Scalar for thresholding.
     cout << cinter.getMin() << endl;
     cout << cinter.getMax() << endl;
 
+    //Subscribe to topics.
     Subscriber listener = node.subscribe("/fft_topic", 100, &SoundInterface::fft_callback, &sinter);
     Subscriber image = node.subscribe(conf.topic, 100, &CameraInterface::image_callback, &cinter);
 
+    //Callbacks.
     spin();
 
     return 0;
@@ -99,7 +124,6 @@ void parse(ifstream *file, struct config *configuration) {
         } else if (line == "strictness") {
             getline(*file, line);
             configuration->strictness = atoi(line.c_str());
-            cout << configuration->strictness << endl;
         } else if (line == "flip_dir") {
             getline(*file, line);
             configuration->flip = (line == "true");
